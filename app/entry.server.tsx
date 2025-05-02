@@ -1,13 +1,17 @@
 import { PassThrough } from "node:stream";
-import * as Sentry from '@sentry/react-router';
+import * as Sentry from "@sentry/react-router";
 
-import type {AppLoadContext, EntryContext, HandleErrorFunction} from "react-router";
+import type {
+  AppLoadContext,
+  EntryContext,
+  HandleErrorFunction,
+} from "react-router";
 import { createReadableStreamFromReadable } from "@react-router/node";
 import { ServerRouter } from "react-router";
 import { isbot } from "isbot";
 import type { RenderToPipeableStreamOptions } from "react-dom/server";
 import { renderToPipeableStream } from "react-dom/server";
-import {getMetaTagTransformer} from "@sentry/react-router";
+import { getMetaTagTransformer } from "@sentry/react-router";
 
 export const streamTimeout = 5_000;
 
@@ -48,8 +52,8 @@ function handleRequest(
             })
           );
 
-            // this enables distributed tracing between client and server
-            pipe(getMetaTagTransformer(body));
+          // this enables distributed tracing between client and server
+          pipe(getMetaTagTransformer(body));
         },
         onShellError(error: unknown) {
           reject(error);
@@ -73,12 +77,12 @@ function handleRequest(
 }
 
 export const handleError: HandleErrorFunction = (error, { request }) => {
-    // React Router may abort some interrupted requests, don't log those
-    if (!request.signal.aborted) {
-        Sentry.captureException(error);
-        // optionally log the error so you can see it
-        console.error(error);
-    }
+  // React Router may abort some interrupted requests, don't log those
+  if (!request.signal.aborted) {
+    Sentry.captureException(error);
+    // optionally log the error so you can see it
+    console.error(error);
+  }
 };
 
 export default Sentry.wrapSentryHandleRequest(handleRequest);
