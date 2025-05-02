@@ -56,4 +56,5 @@ const StatsCard = ({
     </article>
   );
 };
+
 export default StatsCard;
